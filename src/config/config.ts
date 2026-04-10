@@ -56,11 +56,11 @@ const config = {
     port: envVars.SOCKET_PORT,
   },
 
-  cloudinary: {
-    cloudName: envVars.CLOUDINARY_CLOUD_NAME,
-    apiKey: envVars.CLOUDINARY_API_KEY,
-    apiSecret: envVars.CLOUDINARY_API_SECRET,
-  },
+  // cloudinary: {
+  //   cloudName: envVars.CLOUDINARY_CLOUD_NAME,
+  //   apiKey: envVars.CLOUDINARY_API_KEY,
+  //   apiSecret: envVars.CLOUDINARY_API_SECRET,
+  // },
 };
 
 export default config;
