@@ -10,7 +10,7 @@ import { ApiError } from "./src/utils/apiError";
 import { ErrorHandler } from "./src/middlewares/error";
 import logger from "./src/config/logger";
 import { User } from "./src/models/user.model";
-import { userAuth } from "./src/middlewares/auth";
+// import { userAuth } from "./src/middlewares/auth";
 
 import config from "./src/config/config";
 import bcrypt from "bcrypt";
@@ -49,7 +49,7 @@ app.use("/api/v1", routes);
 
 ////////////
 
-app.get("/profile", userAuth, async (req: Request, res: Response) => {
+app.get("/profile", async (req: Request, res: Response) => {
   try {
     const user = req.user;
     res.send(user);
@@ -57,16 +57,6 @@ app.get("/profile", userAuth, async (req: Request, res: Response) => {
     res.status(400).send("ERROR " + err.message);
   }
 });
-
-app.post(
-  "/sendConnectionRequest",
-  userAuth,
-  async (req: Request, res: Response) => {
-    const user = req.user;
-    console.log("Sending a connection request");
-    res.send(user?.firstName + " send the connection request");
-  },
-);
 
 app.get("/user", async (req: Request, res: Response) => {
   const userEmail = req.body.emailId;

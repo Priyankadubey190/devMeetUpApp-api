@@ -27,13 +27,7 @@ export class AuthController {
       catchAsync(this._authValidation.login),
       this.login,
     );
-    this.router.post(
-      "/logout",
-      catchAsync(this._authValidation.logout),
-      this.logout,
-    );
-
-    this.router.get("/me", this.getProfile);
+    this.router.post("/logout", this.logout);
   }
 
   private signUp = catchAsync(async (req: Request, res: Response) => {
@@ -75,17 +69,11 @@ export class AuthController {
     });
   });
 
-  private logout = catchAsync(async (req: Request, res: Response) => {
+  private logout = async (req: Request, res: Response) => {
     res.clearCookie("token");
 
     res.status(httpStatus.OK).send({
       message: "Logout successful",
     });
-  });
-
-  private getProfile = catchAsync(async (req: Request, res: Response) => {
-    res.status(httpStatus.OK).send({
-      user: req.user,
-    });
-  });
+  };
 }

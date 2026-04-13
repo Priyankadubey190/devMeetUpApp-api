@@ -59,21 +59,4 @@ export class AuthValidation {
 
     next();
   };
-
-  public logout = (req: Request, res: Response, next: NextFunction) => {
-    const schema: ObjectSchema = Joi.object().keys({
-      refreshToken: Joi.string().required(),
-    });
-
-    const result = schema.validate(req.body);
-
-    if (result.error) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        result.error.message.split(`"`).join(""),
-      );
-    }
-
-    next();
-  };
 }

@@ -3,6 +3,9 @@ import { Roles } from "../config/roles";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "../config/config";
+import { HydratedDocument } from "mongoose";
+
+export type Role = "user" | "admin" | "moderator";
 
 export interface IUser extends Document {
   _id: string;
@@ -15,11 +18,13 @@ export interface IUser extends Document {
   photoUrl?: string;
   about?: string;
   skills?: string[];
-  role: string;
+  role: Role;
 
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type IUserDocument = HydratedDocument<IUser>;
 
 export const userSchema = new Schema<IUser>(
   {
