@@ -15,6 +15,8 @@ export interface IUser extends Document {
   password: string;
   age?: number;
   gender?: string;
+  isPremium: Boolean;
+  membershipType: String;
   photoUrl?: string;
   about?: string;
   skills?: string[];
@@ -40,6 +42,13 @@ export const userSchema = new Schema<IUser>(
     password: { type: String, required: true },
     age: { type: Number, min: 18, max: 50 },
     gender: { type: String },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+    membershipType: {
+      type: String,
+    },
     photoUrl: {
       type: String,
       default:

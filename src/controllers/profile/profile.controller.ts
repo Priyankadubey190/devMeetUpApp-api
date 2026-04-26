@@ -17,13 +17,13 @@ export class ProfileController {
   }
   private initializeRoutes() {
     this.router.get(
-      "/",
+      "/view",
       this._authMiddleware.auth(),
       catchAsync(this.getProfile.bind(this)),
     );
 
     this.router.patch(
-      "/",
+      "/edit",
       this._authMiddleware.auth(), // ✅ auth middleware
       catchAsync(this._validation.updateProfile),
       catchAsync(this.updateProfile.bind(this)),

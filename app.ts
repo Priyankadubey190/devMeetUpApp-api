@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: "http://localhost:5173",
     credentials: true,
   }),
 );
@@ -45,77 +45,77 @@ app.use((req, res, next) => {
   logger.info(`${req.method} ${req.originalUrl}`);
   next();
 });
-app.use("/api/v1", routes);
+app.use("/", routes);
 
 ////////////
 
-app.get("/profile", async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (err: any) {
-    res.status(400).send("ERROR " + err.message);
-  }
-});
+// app.get("/profile", async (req: Request, res: Response) => {
+//   try {
+//     const user = req.user;
+//     res.send(user);
+//   } catch (err: any) {
+//     res.status(400).send("ERROR " + err.message);
+//   }
+// });
 
-app.get("/user", async (req: Request, res: Response) => {
-  const userEmail = req.body.emailId;
-  try {
-    const user = await User.find({ emailId: userEmail });
-    if (user.length === 0) {
-      res.status(404).send("user not found");
-    } else {
-      res.send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went wrong");
-  }
-});
+// app.get("/user", async (req: Request, res: Response) => {
+//   const userEmail = req.body.emailId;
+//   try {
+//     const user = await User.find({ emailId: userEmail });
+//     if (user.length === 0) {
+//       res.status(404).send("user not found");
+//     } else {
+//       res.send(user);
+//     }
+//   } catch (err) {
+//     res.status(400).send("Something went wrong");
+//   }
+// });
 
-app.get("/feed", async (req: Request, res: Response) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (err) {
-    res.status(400).send("Something went wrong ");
-  }
-});
+// app.get("/feed", async (req: Request, res: Response) => {
+//   try {
+//     const users = await User.find({});
+//     res.send(users);
+//   } catch (err) {
+//     res.status(400).send("Something went wrong ");
+//   }
+// });
 
-app.delete("/user", async (req: Request, res: Response) => {
-  const userId = req.body.userId;
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    res.send("User deleted successfully");
-  } catch (err) {
-    res.status(400).send("Something went wrong");
-  }
-});
+// app.delete("/user", async (req: Request, res: Response) => {
+//   const userId = req.body.userId;
+//   try {
+//     const user = await User.findByIdAndDelete(userId);
+//     res.send("User deleted successfully");
+//   } catch (err) {
+//     res.status(400).send("Something went wrong");
+//   }
+// });
 
-app.patch("/user/:userId", async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-  const data = req.body;
-  try {
-    const ALLOWED_UPDATE = [
-      "userId",
-      "photoUrl",
-      "about",
-      "gender",
-      "age",
-      "skills",
-    ];
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATE.includes(k),
-    );
-    if (!isUpdateAllowed) {
-      throw new Error("Update not allowed");
-    }
+// app.patch("/user/:userId", async (req: Request, res: Response) => {
+//   const userId = req.params.userId;
+//   const data = req.body;
+//   try {
+//     const ALLOWED_UPDATE = [
+//       "userId",
+//       "photoUrl",
+//       "about",
+//       "gender",
+//       "age",
+//       "skills",
+//     ];
+//     const isUpdateAllowed = Object.keys(data).every((k) =>
+//       ALLOWED_UPDATE.includes(k),
+//     );
+//     if (!isUpdateAllowed) {
+//       throw new Error("Update not allowed");
+//     }
 
-    const user = await User.findByIdAndUpdate({ _id: userId }, data);
-    res.send("User updated successfully");
-  } catch (err: any) {
-    res.status(400).send(err.message);
-  }
-});
+//     const user = await User.findByIdAndUpdate({ _id: userId }, data);
+//     res.send("User updated successfully");
+//   } catch (err: any) {
+//     res.status(400).send(err.message);
+//   }
+// });
 
 /////////////
 
