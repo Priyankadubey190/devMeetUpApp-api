@@ -3,6 +3,7 @@ import { Server, Socket } from "socket.io";
 import crypto from "crypto";
 import { Chat } from "../models/chat.model";
 import { Types } from "mongoose";
+import config from "../config/config";
 
 interface JoinChatPayload {
   firstName: string;
@@ -22,9 +23,16 @@ class SocketManager {
   private io: Server;
 
   constructor(server: HttpServer) {
+    const allowedOrigins = [
+      config.frontendUrl?.trim(),
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ].filter(Boolean) as string[];
+
     this.io = new Server(server, {
       cors: {
-        origin: "http://localhost:5173",
+        origin: allowedOrigins,
+        credentials: true,
       },
     });
 

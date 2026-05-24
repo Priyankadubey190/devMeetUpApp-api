@@ -28,10 +28,11 @@ class AuthController {
         this.signUp = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const user = yield this._authManager.registerUser(req.body);
             const tokens = this._tokenManager.generateAuthToken(user);
+            const isProd = process.env.NODE_ENV === "production";
             res.cookie("token", tokens.access.token, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "lax",
+                secure: isProd,
+                sameSite: isProd ? "none" : "lax",
             });
             res.status(http_status_1.default.CREATED).send({
                 message: "User registered successfully",
@@ -42,10 +43,11 @@ class AuthController {
             const { emailId, password } = req.body;
             const user = yield this._authManager.loginWithEmailAndPassword(emailId, password);
             const tokens = this._tokenManager.generateAuthToken(user);
+            const isProd = process.env.NODE_ENV === "production";
             res.cookie("token", tokens.access.token, {
                 httpOnly: true,
-                secure: false,
-                sameSite: "lax",
+                secure: isProd,
+                sameSite: isProd ? "none" : "lax",
             });
             res.status(http_status_1.default.OK).send({
                 message: "Login successful",

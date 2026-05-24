@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
@@ -13,6 +14,8 @@ const routes_1 = __importDefault(require("./routes"));
 const apiError_1 = require("./src/utils/apiError");
 const error_1 = require("./src/middlewares/error");
 const logger_1 = __importDefault(require("./src/config/logger"));
+// import { userAuth } from "./src/middlewares/auth";
+const config_1 = __importDefault(require("./src/config/config"));
 const cookieParser = require("cookie-parser");
 const app = (0, express_1.default)();
 const _errorHandler = new error_1.ErrorHandler();
@@ -21,8 +24,21 @@ app.use((0, compression_1.default)());
 app.use(express_1.default.json());
 app.use(cookieParser());
 app.use(express_1.default.urlencoded({ extended: true }));
+const allowedOrigins = [
+    (_a = config_1.default.frontendUrl) === null || _a === void 0 ? void 0 : _a.trim(),
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8080",
+].filter(Boolean);
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new apiError_1.ApiError(http_status_1.default.FORBIDDEN, "CORS origin denied"));
+        }
+    },
     credentials: true,
 }));
 const limiter = (0, express_rate_limit_1.default)({

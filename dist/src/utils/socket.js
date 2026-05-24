@@ -17,11 +17,19 @@ const socket_io_1 = require("socket.io");
 const crypto_1 = __importDefault(require("crypto"));
 const chat_model_1 = require("../models/chat.model");
 const mongoose_1 = require("mongoose");
+const config_1 = __importDefault(require("../config/config"));
 class SocketManager {
     constructor(server) {
+        var _a;
+        const allowedOrigins = [
+            (_a = config_1.default.frontendUrl) === null || _a === void 0 ? void 0 : _a.trim(),
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ].filter(Boolean);
         this.io = new socket_io_1.Server(server, {
             cors: {
-                origin: "http://localhost:5173",
+                origin: allowedOrigins,
+                credentials: true,
             },
         });
         this.initializeEventListeners();
