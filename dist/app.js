@@ -22,7 +22,7 @@ app.use(express_1.default.json());
 app.use(cookieParser());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 const limiter = (0, express_rate_limit_1.default)({
