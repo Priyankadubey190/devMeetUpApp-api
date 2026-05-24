@@ -5,6 +5,15 @@ import logger from "./src/config/logger";
 import http from "http";
 import { initializeSocket } from "./src/utils/socket";
 
+const handleMongoError = (err: unknown) => {
+  console.error("MongoDB connection failed:", err);
+  logger.error("MongoDB connection failed", {
+    error: err,
+    saveInDB: true,
+  });
+  process.exit(1);
+};
+
 let server = http.createServer(app);
 initializeSocket(server);
 
@@ -18,10 +27,7 @@ mongoose
     });
   })
   .catch((err) => {
-    logger.error("MongoDB connection failed", {
-      error: err,
-      saveInDB: true,
-    });
+    handleMongoError(err);
   });
 
 const exitHandler = () => {
