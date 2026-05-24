@@ -9,6 +9,14 @@ const config_1 = __importDefault(require("./src/config/config"));
 const logger_1 = __importDefault(require("./src/config/logger"));
 const http_1 = __importDefault(require("http"));
 const socket_1 = require("./src/utils/socket");
+const handleMongoError = (err) => {
+    console.error("MongoDB connection failed:", err);
+    logger_1.default.error("MongoDB connection failed", {
+        error: err,
+        saveInDB: true,
+    });
+    process.exit(1);
+};
 let server = http_1.default.createServer(app_1.default);
 (0, socket_1.initializeSocket)(server);
 mongoose_1.default
@@ -20,10 +28,7 @@ mongoose_1.default
     });
 })
     .catch((err) => {
-    logger_1.default.error("MongoDB connection failed", {
-        error: err,
-        saveInDB: true,
-    });
+    handleMongoError(err);
 });
 const exitHandler = () => {
     if (server) {
