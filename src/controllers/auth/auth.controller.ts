@@ -35,10 +35,12 @@ export class AuthController {
 
     const tokens = this._tokenManager.generateAuthToken(user);
 
+    const isProd = process.env.NODE_ENV === "production";
+
     res.cookie("token", tokens.access.token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
 
     res.status(httpStatus.CREATED).send({
@@ -57,10 +59,12 @@ export class AuthController {
 
     const tokens = this._tokenManager.generateAuthToken(user);
 
+    const isProd = process.env.NODE_ENV === "production";
+
     res.cookie("token", tokens.access.token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
 
     res.status(httpStatus.OK).send({
