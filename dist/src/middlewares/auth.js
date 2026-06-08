@@ -24,9 +24,16 @@ const config_1 = __importDefault(require("../config/config"));
 const apiError_1 = require("../utils/apiError");
 const user_model_1 = require("../models/user.model");
 const roles_1 = require("../config/roles");
+const logger_1 = __importDefault(require("../config/logger"));
 class AuthMiddleware {
     constructor() {
         this.verifyCallback = (req, resolve, reject, requiredRights = [], options) => (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                logger_1.default.info("Auth middleware: token present=" + Boolean(token) + " path=" + req.path);
+            }
+            catch (e) {
+                // keep silent if logger fails
+            }
             try {
                 if (!token) {
                     return reject(new apiError_1.ApiError(http_status_1.default.UNAUTHORIZED, "Please authenticate"));

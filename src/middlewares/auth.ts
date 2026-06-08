@@ -40,6 +40,7 @@ import { User } from "../models/user.model";
 import { Roles } from "../config/roles";
 import { IUserDocument } from "../models/user.model";
 import { JwtUserPayload } from "../types/jwt";
+import logger from "../config/logger";
 
 // ✅ Extend Request
 declare global {
@@ -60,6 +61,16 @@ export class AuthMiddleware {
       options?: { allowSinglePermission?: boolean },
     ) =>
     async (token: string | undefined) => {
+      try {
+        logger.info(
+          "Auth middleware: token present=" +
+            Boolean(token) +
+            " path=" +
+            req.path,
+        );
+      } catch (e) {
+        // keep silent if logger fails
+      }
       try {
         if (!token) {
           return reject(
