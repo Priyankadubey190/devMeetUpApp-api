@@ -19,6 +19,8 @@ const config_1 = __importDefault(require("./src/config/config"));
 const cookieParser = require("cookie-parser");
 const app = (0, express_1.default)();
 const _errorHandler = new error_1.ErrorHandler();
+// Render runs behind a proxy, so trust the forwarded headers.
+app.set("trust proxy", 1);
 app.use((0, helmet_1.default)());
 app.use((0, compression_1.default)());
 app.use(express_1.default.json());
