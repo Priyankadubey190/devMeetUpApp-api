@@ -27,19 +27,12 @@ class AuthController {
         this._tokenManager = new token_manager_1.TokenManager();
         this._authValidation = new auth_validation_1.AuthValidation();
         this.signUp = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const user = yield this._authManager.registerUser(req.body);
             const tokens = this._tokenManager.generateAuthToken(user);
-            const isProd = process.env.NODE_ENV === "production";
-            const cookieOptions = {
-                httpOnly: true,
-                secure: isProd,
-                sameSite: isProd ? "none" : "lax",
-                path: "/",
-            };
-            res.cookie("token", tokens.access.token, cookieOptions);
+            res.cookie("token", tokens.access.token, this.cookieOptions);
             try {
-                const hasSetCookie = Boolean(res.getHeader && res.getHeader("Set-Cookie"));
-                logger_1.default.info(`Auth controller (signup): Set-Cookie header present=${hasSetCookie}`);
+                logger_1.default.info(`Auth controller (signup): Set-Cookie header present=${Boolean((_a = res.getHeader) === null || _a === void 0 ? void 0 : _a.call(res, "Set-Cookie"))}`);
             }
             catch (e) {
                 // ignore logging errors
@@ -50,20 +43,13 @@ class AuthController {
             });
         }));
         this.login = (0, asyncWrapper_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const { emailId, password } = req.body;
             const user = yield this._authManager.loginWithEmailAndPassword(emailId, password);
             const tokens = this._tokenManager.generateAuthToken(user);
-            const isProd = process.env.NODE_ENV === "production";
-            const cookieOptions = {
-                httpOnly: true,
-                secure: isProd,
-                sameSite: isProd ? "none" : "lax",
-                path: "/",
-            };
-            res.cookie("token", tokens.access.token, cookieOptions);
+            res.cookie("token", tokens.access.token, this.cookieOptions);
             try {
-                const hasSetCookie = Boolean(res.getHeader && res.getHeader("Set-Cookie"));
-                logger_1.default.info(`Auth controller (login): Set-Cookie header present=${hasSetCookie}`);
+                logger_1.default.info(`Auth controller (login): Set-Cookie header present=${Boolean((_a = res.getHeader) === null || _a === void 0 ? void 0 : _a.call(res, "Set-Cookie"))}`);
             }
             catch (e) {
                 // ignore logging errors
@@ -74,12 +60,22 @@ class AuthController {
             });
         }));
         this.logout = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            res.clearCookie("token", { path: "/" });
+            res.clearCookie("token", this.cookieOptions);
             res.status(http_status_1.default.OK).send({
                 message: "Logout successful",
             });
         });
         this.initializeRoutes();
+    }
+    /** Shared cookie options — must be identical for set and clear */
+    get cookieOptions() {
+        const isProd = process.env.NODE_ENV === "production";
+        return {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: (isProd ? "none" : "lax"),
+            path: "/",
+        };
     }
     initializeRoutes() {
         this.router.post("/signup", (0, asyncWrapper_1.default)(this._authValidation.register), this.signUp);

@@ -4,7 +4,6 @@ import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import httpStatus from "http-status";
-import types from "./src/types/express";
 import routes from "./routes";
 import { ApiError } from "./src/utils/apiError";
 import { ErrorHandler } from "./src/middlewares/error";
