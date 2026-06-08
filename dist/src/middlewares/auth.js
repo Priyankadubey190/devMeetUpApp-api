@@ -29,7 +29,10 @@ class AuthMiddleware {
     constructor() {
         this.verifyCallback = (req, resolve, reject, requiredRights = [], options) => (token) => __awaiter(this, void 0, void 0, function* () {
             try {
-                logger_1.default.info("Auth middleware: token present=" + Boolean(token) + " path=" + req.path);
+                logger_1.default.info("Auth middleware: token present=" +
+                    Boolean(token) +
+                    " path=" +
+                    req.path);
             }
             catch (e) {
                 // keep silent if logger fails

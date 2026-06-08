@@ -19,6 +19,7 @@ const asyncWrapper_1 = __importDefault(require("../../utils/asyncWrapper"));
 const auth_manager_1 = require("./auth.manager");
 const auth_validation_1 = require("./auth.validation");
 const token_manager_1 = require("../token/token.manager");
+const logger_1 = __importDefault(require("../../config/logger"));
 class AuthController {
     constructor() {
         this.router = (0, express_1.Router)();
@@ -36,6 +37,13 @@ class AuthController {
                 path: "/",
             };
             res.cookie("token", tokens.access.token, cookieOptions);
+            try {
+                const hasSetCookie = Boolean(res.getHeader && res.getHeader("Set-Cookie"));
+                logger_1.default.info(`Auth controller (signup): Set-Cookie header present=${hasSetCookie}`);
+            }
+            catch (e) {
+                // ignore logging errors
+            }
             res.status(http_status_1.default.CREATED).send({
                 message: "User registered successfully",
                 user,
@@ -53,6 +61,13 @@ class AuthController {
                 path: "/",
             };
             res.cookie("token", tokens.access.token, cookieOptions);
+            try {
+                const hasSetCookie = Boolean(res.getHeader && res.getHeader("Set-Cookie"));
+                logger_1.default.info(`Auth controller (login): Set-Cookie header present=${hasSetCookie}`);
+            }
+            catch (e) {
+                // ignore logging errors
+            }
             res.status(http_status_1.default.OK).send({
                 message: "Login successful",
                 user,

@@ -4,6 +4,7 @@ import catchAsync from "../../utils/asyncWrapper";
 import { AuthManager } from "./auth.manager";
 import { AuthValidation } from "./auth.validation";
 import { TokenManager } from "../token/token.manager";
+import logger from "../../config/logger";
 
 export class AuthController {
   public router = Router();
@@ -44,6 +45,16 @@ export class AuthController {
     } as const;
 
     res.cookie("token", tokens.access.token, cookieOptions);
+    try {
+      const hasSetCookie = Boolean(
+        res.getHeader && res.getHeader("Set-Cookie"),
+      );
+      logger.info(
+        `Auth controller (signup): Set-Cookie header present=${hasSetCookie}`,
+      );
+    } catch (e) {
+      // ignore logging errors
+    }
 
     res.status(httpStatus.CREATED).send({
       message: "User registered successfully",
@@ -70,6 +81,16 @@ export class AuthController {
     } as const;
 
     res.cookie("token", tokens.access.token, cookieOptions);
+    try {
+      const hasSetCookie = Boolean(
+        res.getHeader && res.getHeader("Set-Cookie"),
+      );
+      logger.info(
+        `Auth controller (login): Set-Cookie header present=${hasSetCookie}`,
+      );
+    } catch (e) {
+      // ignore logging errors
+    }
 
     res.status(httpStatus.OK).send({
       message: "Login successful",
