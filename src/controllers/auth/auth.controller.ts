@@ -36,12 +36,14 @@ export class AuthController {
     const tokens = this._tokenManager.generateAuthToken(user);
 
     const isProd = process.env.NODE_ENV === "production";
-
-    res.cookie("token", tokens.access.token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
-    });
+      path: "/",
+    } as const;
+
+    res.cookie("token", tokens.access.token, cookieOptions);
 
     res.status(httpStatus.CREATED).send({
       message: "User registered successfully",
@@ -60,12 +62,14 @@ export class AuthController {
     const tokens = this._tokenManager.generateAuthToken(user);
 
     const isProd = process.env.NODE_ENV === "production";
-
-    res.cookie("token", tokens.access.token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? "none" : "lax",
-    });
+      path: "/",
+    } as const;
+
+    res.cookie("token", tokens.access.token, cookieOptions);
 
     res.status(httpStatus.OK).send({
       message: "Login successful",
@@ -74,7 +78,7 @@ export class AuthController {
   });
 
   private logout = async (req: Request, res: Response) => {
-    res.clearCookie("token");
+    res.clearCookie("token", { path: "/" });
 
     res.status(httpStatus.OK).send({
       message: "Logout successful",

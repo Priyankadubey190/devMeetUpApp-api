@@ -24,8 +24,9 @@ app.use((0, compression_1.default)());
 app.use(express_1.default.json());
 app.use(cookieParser());
 app.use(express_1.default.urlencoded({ extended: true }));
+const frontendOrigin = (_a = config_1.default.frontendUrl) === null || _a === void 0 ? void 0 : _a.trim().replace(/\/+$/, "");
 const allowedOrigins = [
-    (_a = config_1.default.frontendUrl) === null || _a === void 0 ? void 0 : _a.trim(),
+    frontendOrigin,
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:8080",

@@ -28,8 +28,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+const frontendOrigin = config.frontendUrl?.trim().replace(/\/+$/, "");
 const allowedOrigins = [
-  config.frontendUrl?.trim(),
+  frontendOrigin,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:8080",

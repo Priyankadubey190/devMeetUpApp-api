@@ -29,11 +29,13 @@ class AuthController {
             const user = yield this._authManager.registerUser(req.body);
             const tokens = this._tokenManager.generateAuthToken(user);
             const isProd = process.env.NODE_ENV === "production";
-            res.cookie("token", tokens.access.token, {
+            const cookieOptions = {
                 httpOnly: true,
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
-            });
+                path: "/",
+            };
+            res.cookie("token", tokens.access.token, cookieOptions);
             res.status(http_status_1.default.CREATED).send({
                 message: "User registered successfully",
                 user,
@@ -44,18 +46,20 @@ class AuthController {
             const user = yield this._authManager.loginWithEmailAndPassword(emailId, password);
             const tokens = this._tokenManager.generateAuthToken(user);
             const isProd = process.env.NODE_ENV === "production";
-            res.cookie("token", tokens.access.token, {
+            const cookieOptions = {
                 httpOnly: true,
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
-            });
+                path: "/",
+            };
+            res.cookie("token", tokens.access.token, cookieOptions);
             res.status(http_status_1.default.OK).send({
                 message: "Login successful",
                 user,
             });
         }));
         this.logout = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            res.clearCookie("token");
+            res.clearCookie("token", { path: "/" });
             res.status(http_status_1.default.OK).send({
                 message: "Logout successful",
             });
