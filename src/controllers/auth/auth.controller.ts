@@ -19,11 +19,13 @@ export class AuthController {
 
   /** Shared cookie options — must be identical for set and clear */
   private get cookieOptions() {
-    const isProd = process.env.NODE_ENV === "production";
+    // For cross-origin HTTPS (Netlify frontend + Render backend), always use secure + none
+    // For local development, use secure: false + lax
+    const isLocal = !process.env.FRONTEND_URL?.includes("netlify");
     return {
       httpOnly: true,
-      secure: isProd,
-      sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+      secure: !isLocal, // true for production, false for local
+      sameSite: (isLocal ? "lax" : "none") as "none" | "lax",
       path: "/",
     };
   }
