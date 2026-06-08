@@ -17,6 +17,17 @@ export class AuthController {
     this.initializeRoutes();
   }
 
+  /** Shared cookie options — must be identical for set and clear */
+  private get cookieOptions() {
+    const isProd = process.env.NODE_ENV === "production";
+    return {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: (isProd ? "none" : "lax") as "none" | "lax",
+      path: "/",
+    };
+  }
+
   private initializeRoutes() {
     this.router.post(
       "/signup",
@@ -33,24 +44,12 @@ export class AuthController {
 
   private signUp = catchAsync(async (req: Request, res: Response) => {
     const user = await this._authManager.registerUser(req.body);
-
     const tokens = this._tokenManager.generateAuthToken(user);
 
-    const isProd = process.env.NODE_ENV === "production";
-    const cookieOptions = {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/",
-    } as const;
-
-    res.cookie("token", tokens.access.token, cookieOptions);
+    res.cookie("token", tokens.access.token, this.cookieOptions);
     try {
-      const hasSetCookie = Boolean(
-        res.getHeader && res.getHeader("Set-Cookie"),
-      );
       logger.info(
-        `Auth controller (signup): Set-Cookie header present=${hasSetCookie}`,
+        `Auth controller (signup): Set-Cookie header present=${Boolean(res.getHeader?.("Set-Cookie"))}`,
       );
     } catch (e) {
       // ignore logging errors
@@ -72,21 +71,10 @@ export class AuthController {
 
     const tokens = this._tokenManager.generateAuthToken(user);
 
-    const isProd = process.env.NODE_ENV === "production";
-    const cookieOptions = {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      path: "/",
-    } as const;
-
-    res.cookie("token", tokens.access.token, cookieOptions);
+    res.cookie("token", tokens.access.token, this.cookieOptions);
     try {
-      const hasSetCookie = Boolean(
-        res.getHeader && res.getHeader("Set-Cookie"),
-      );
       logger.info(
-        `Auth controller (login): Set-Cookie header present=${hasSetCookie}`,
+        `Auth controller (login): Set-Cookie header present=${Boolean(res.getHeader?.("Set-Cookie"))}`,
       );
     } catch (e) {
       // ignore logging errors
@@ -99,7 +87,7 @@ export class AuthController {
   });
 
   private logout = async (req: Request, res: Response) => {
-    res.clearCookie("token", { path: "/" });
+    res.clearCookie("token", this.cookieOptions);
 
     res.status(httpStatus.OK).send({
       message: "Logout successful",
