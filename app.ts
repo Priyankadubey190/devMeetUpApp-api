@@ -19,6 +19,9 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const _errorHandler = new ErrorHandler();
 
+// Render runs behind a proxy, so trust the forwarded headers.
+app.set("trust proxy", 1);
+
 app.use(helmet());
 
 app.use(compression());
